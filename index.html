@@ -506,7 +506,7 @@ statusEl.style.display = 'block';
 statusEl.textContent = 'Connecting to database…';
 
 // Tiny connectivity check before showing the UI
-db.collection('canoe-signups').limit(1).get()
+db.collection('canoe-signups').limit(1)
   .then(() => {
     statusEl.style.display = 'none';
     document.getElementById('app').style.display = 'grid';

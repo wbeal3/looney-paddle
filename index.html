@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canoe Sign-Up 🛶</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal-50:  #e1f5ee;
+      --teal-100: #9fe1cb;
+      --teal-500: #1d9e75;
+      --teal-700: #0f6e56;
+      --teal-900: #04342c;
+      --sand:     #fdf8f0;
+      --sand-200: #f0e8d8;
+      --amber:    #d4883c;
+      --red-50:   #fcebeb;
+      --red-600:  #a32d2d;
+      --text:     #1c2826;
+      --text-2:   #4a6058;
+      --text-3:   #8aaa9e;
+      --border:   rgba(0,0,0,0.10);
+      --border-2: rgba(0,0,0,0.18);
+      --radius:   10px;
+      --radius-lg:14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--sand);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--teal-900);
+      padding: 2.5rem 1.5rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 36px;
+      background: var(--sand);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+    header h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 600;
+      color: var(--teal-50);
+      letter-spacing: -0.01em;
+    }
+    header p {
+      margin-top: 0.4rem;
+      color: var(--teal-100);
+      font-size: 1rem;
+    }
+    .wave-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      font-size: 1.4rem;
+      opacity: 0.6;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 640px) { main { grid-template-columns: 1fr; } }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+    .card-title {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Date grid ── */
+    .label { font-size: 0.8rem; font-weight: 500; color: var(--text-2); margin-bottom: 0.5rem; }
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 1.25rem;
+    }
+    .date-btn {
+      border: 1px solid var(--border);
+      background: var(--sand);
+      border-radius: 8px;
+      padding: 5px 2px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.12s, background 0.12s;
+      line-height: 1.3;
+    }
+    .date-btn:hover { border-color: var(--teal-500); }
+    .date-btn.selected { background: var(--teal-50); border-color: var(--teal-500); }
+    .date-btn .dow { font-size: 0.6rem; color: var(--text-3); }
+    .date-btn .day { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+    .date-btn.selected .dow { color: var(--teal-700); }
+    .date-btn.selected .day { color: var(--teal-900); }
+
+    /* ── Slots ── */
+    .slot-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.25rem; }
+    .slot-btn {
+      border: 1px solid var(--border);
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.12s, background 0.12s;
+      width: 100%;
+    }
+    .slot-btn:hover:not([disabled]) { border-color: var(--teal-500); }
+    .slot-btn.selected { background: var(--teal-50); border-color: var(--teal-500); }
+    .slot-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+    .slot-emoji { font-size: 1rem; }
+    .slot-info { flex: 1; }
+    .slot-name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+    .slot-time { font-size: 0.75rem; color: var(--text-2); }
+    .taken-badge {
+      font-size: 0.7rem; font-weight: 500;
+      color: var(--red-600); background: var(--red-50);
+      border-radius: 5px; padding: 2px 7px;
+    }
+
+    /* ── Form inputs ── */
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.12s;
+      margin-bottom: 0.75rem;
+    }
+    input[type="text"]:focus { border-color: var(--teal-500); }
+
+    .submit-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--teal-500);
+      background: var(--teal-50);
+      color: var(--teal-900);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .submit-btn:hover:not([disabled]) { background: var(--teal-100); }
+    .submit-btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+    .success-msg {
+      background: var(--teal-50);
+      border: 1px solid var(--teal-500);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      font-size: 0.8rem;
+      color: var(--teal-700);
+      margin-bottom: 0.75rem;
+      display: none;
+    }
+
+    /* ── Booking list ── */
+    .booking-list { display: flex; flex-direction: column; gap: 10px; }
+    .booking-day-header {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-3);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 5px;
+    }
+    .booking-group { margin-bottom: 0.25rem; }
+    .booking-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--sand);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 4px;
+    }
+    .booking-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--teal-100);
+      color: var(--teal-900);
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .booking-info { flex: 1; }
+    .booking-name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+    .booking-slot-label { font-size: 0.72rem; color: var(--text-2); }
+    .del-btn {
+      border: none; background: none;
+      cursor: pointer; color: var(--text-3);
+      font-size: 1rem; padding: 4px;
+      border-radius: 5px; line-height: 1;
+      transition: color 0.12s, background 0.12s;
+    }
+    .del-btn:hover { color: var(--red-600); background: var(--red-50); }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-3);
+      font-size: 0.85rem;
+    }
+    .empty-state .big { font-size: 2rem; margin-bottom: 0.5rem; }
+
+    /* ── Loading / error ── */
+    #status {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🛶 Canoe Sign-Up</h1>
+  <p>Pick your time and grab a paddle</p>
+  <div class="wave-row">〰️〰️〰️〰️〰️</div>
+</header>
+
+<div id="status">Connecting…</div>
+
+<main id="app" style="display:none;">
+  <!-- Sign-up form -->
+  <div class="card">
+    <div class="card-title">Book a time</div>
+
+    <div class="label">Pick a date</div>
+    <div class="date-grid" id="date-grid"></div>
+
+    <div class="label">Choose a slot</div>
+    <div class="slot-list" id="slot-list"></div>
+
+    <div class="label">Your name</div>
+    <input type="text" id="name-input" placeholder="Enter your name…" maxlength="40" />
+
+    <div class="success-msg" id="success-msg"></div>
+
+    <button class="submit-btn" id="submit-btn" disabled>Reserve my spot 🛶</button>
+  </div>
+
+  <!-- Bookings panel -->
+  <div class="card">
+    <div class="card-title">All bookings</div>
+    <div class="booking-list" id="booking-list">
+      <div class="empty-state"><div class="big">🌊</div>No bookings yet — be the first!</div>
+    </div>
+  </div>
+</main>
+
+<!-- ─────────────────────────────────────────────────────────────
+     Firebase SDKs  (compat v9 — no build step needed)
+──────────────────────────────────────────────────────────────── -->
+<script src="https://unpkg.com/firebase@10.12.0/firebase-app-compat.js"></script>
+<script src="https://unpkg.com/firebase@10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  🔧 REPLACE THIS WITH YOUR FIREBASE CONFIG
+//  Firebase console → Project settings → Your apps → SDK setup
+// ════════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+// ════════════════════════════════════════════════════════════════
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const signupsRef = db.collection('canoe-signups');
+
+// ── Constants ──────────────────────────────────────────────────
+const SLOTS = [
+  { id: 'morning',   label: 'Morning',   time: '8:00 – 11:00 am', emoji: '🌅' },
+  { id: 'afternoon', label: 'Afternoon', time: '12:00 – 3:00 pm', emoji: '☀️'  },
+  { id: 'evening',   label: 'Evening',   time: '4:00 – 7:00 pm',  emoji: '🌇' },
+];
+const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ── State ──────────────────────────────────────────────────────
+let signups      = [];   // live from Firestore
+let selectedDate = null;
+let selectedSlot = null;
+
+// ── Helpers ────────────────────────────────────────────────────
+function initials(name) {
+  return name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+}
+function fmtDate(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
+}
+function getDates() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    return { iso: d.toISOString().slice(0, 10), dow: DAYS[d.getDay()], day: d.getDate() };
+  });
+}
+function takenBy(date, slotId) {
+  return signups.find(s => s.date === date && s.slot === slotId);
+}
+
+// ── Render: date grid ──────────────────────────────────────────
+function renderDates() {
+  const grid = document.getElementById('date-grid');
+  grid.innerHTML = '';
+  getDates().forEach(({ iso, dow, day }) => {
+    const btn = document.createElement('button');
+    btn.className = 'date-btn' + (selectedDate === iso ? ' selected' : '');
+    btn.innerHTML = `<div class="dow">${dow}</div><div class="day">${day}</div>`;
+    btn.onclick = () => { selectedDate = iso; selectedSlot = null; renderAll(); };
+    grid.appendChild(btn);
+  });
+}
+
+// ── Render: slot list ──────────────────────────────────────────
+function renderSlots() {
+  const list = document.getElementById('slot-list');
+  list.innerHTML = '';
+  SLOTS.forEach(slot => {
+    const taken = selectedDate ? takenBy(selectedDate, slot.id) : null;
+    const isSel = selectedSlot === slot.id && !taken;
+    const btn = document.createElement('button');
+    btn.className = 'slot-btn' + (isSel ? ' selected' : '');
+    btn.disabled = !!taken;
+    btn.innerHTML = `
+      <span class="slot-emoji">${slot.emoji}</span>
+      <div class="slot-info">
+        <div class="slot-name">${slot.label}</div>
+        <div class="slot-time">${taken ? 'Taken by ' + taken.name : slot.time}</div>
+      </div>
+      ${taken ? '<span class="taken-badge">Booked</span>' : ''}
+    `;
+    if (!taken) btn.onclick = () => { selectedSlot = slot.id; renderSlots(); validate(); };
+    list.appendChild(btn);
+  });
+}
+
+// ── Render: bookings panel ─────────────────────────────────────
+function renderBookings() {
+  const list = document.getElementById('booking-list');
+  if (!signups.length) {
+    list.innerHTML = '<div class="empty-state"><div class="big">🌊</div>No bookings yet — be the first!</div>';
+    return;
+  }
+  const byDate = {};
+  signups.forEach(s => { if (!byDate[s.date]) byDate[s.date] = []; byDate[s.date].push(s); });
+  const slotOrder = { morning: 0, afternoon: 1, evening: 2 };
+  list.innerHTML = '';
+  Object.keys(byDate).sort().forEach(date => {
+    const group = document.createElement('div');
+    group.className = 'booking-group';
+    group.innerHTML = `<div class="booking-day-header">${fmtDate(date)}</div>`;
+    byDate[date].sort((a, b) => slotOrder[a.slot] - slotOrder[b.slot]).forEach(s => {
+      const slotInfo = SLOTS.find(sl => sl.id === s.slot);
+      if (!slotInfo || !s.name) return; // skip malformed docs
+      const item = document.createElement('div');
+      item.className = 'booking-item';
+      item.innerHTML = `
+        <div class="booking-avatar">${initials(s.name)}</div>
+        <div class="booking-info">
+          <div class="booking-name">${escHtml(s.name)}</div>
+          <div class="booking-slot-label">${slotInfo.emoji} ${slotInfo.label} · ${slotInfo.time}</div>
+        </div>
+        <button class="del-btn" title="Remove booking" data-id="${s.firestoreId}">✕</button>
+      `;
+      group.appendChild(item);
+    });
+    list.appendChild(group);
+  });
+  list.querySelectorAll('.del-btn').forEach(btn => {
+    btn.onclick = () => deleteBooking(btn.dataset.id);
+  });
+}
+
+function renderAll() {
+  renderDates();
+  renderSlots();
+  renderBookings();
+  validate();
+}
+
+function validate() {
+  const input = document.getElementById('name-input');
+  const btn   = document.getElementById('submit-btn');
+  if (!input || !btn) return;
+  btn.disabled = !(selectedDate && selectedSlot && input.value.trim().length > 0);
+}
+
+function escHtml(str) {
+  return str.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+// ── Firestore: real-time listener ─────────────────────────────
+function startListener() {
+  signupsRef.orderBy('createdAt').onSnapshot(snapshot => {
+    signups = snapshot.docs.map(doc => ({ firestoreId: doc.id, ...doc.data() }));
+    renderAll();
+  }, err => {
+    console.error(err);
+    statusEl.style.display = 'block';
+    statusEl.textContent = '⚠️ Could not load data. Check your Firebase config and Firestore rules.';
+  });
+}
+
+// ── Firestore: add booking ─────────────────────────────────────
+document.getElementById('submit-btn').onclick = async () => {
+  const name = document.getElementById('name-input').value.trim();
+  if (!name || !selectedDate || !selectedSlot) return;
+  if (takenBy(selectedDate, selectedSlot)) return;
+
+  document.getElementById('submit-btn').disabled = true;
+
+  try {
+    await signupsRef.add({
+      date:      selectedDate,
+      slot:      selectedSlot,
+      name:      name,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    const slotInfo = SLOTS.find(s => s.id === selectedSlot);
+    const msg = document.getElementById('success-msg');
+    msg.textContent = `✅ ${name} is booked for ${slotInfo.label} on ${fmtDate(selectedDate)}!`;
+    msg.style.display = 'block';
+    selectedSlot = null;
+    document.getElementById('name-input').value = '';
+    setTimeout(() => { msg.style.display = 'none'; }, 4000);
+    // Bookings panel updates automatically via onSnapshot
+  } catch (e) {
+    alert('Error saving booking: ' + e.message);
+    console.error(e);
+  }
+};
+
+// ── Firestore: delete booking ──────────────────────────────────
+async function deleteBooking(id) {
+  if (!confirm('Remove this booking?')) return;
+  try {
+    await signupsRef.doc(id).delete();
+  } catch (e) {
+    alert('Error deleting booking: ' + e.message);
+  }
+}
+
+// ── Name input wires up validation ────────────────────────────
+document.getElementById('name-input').addEventListener('input', validate);
+
+// ── Boot ──────────────────────────────────────────────────────
+const statusEl = document.getElementById('status');
+statusEl.style.display = 'block';
+statusEl.textContent = 'Connecting to database…';
+
+// Tiny connectivity check before showing the UI
+db.collection('canoe-signups').limit(1).get()
+  .then(() => {
+    statusEl.style.display = 'none';
+    document.getElementById('app').style.display = 'grid';
+    startListener();
+  })
+  .catch(err => {
+    statusEl.style.display = 'block';
+    if (firebaseConfig.apiKey === 'YOUR_API_KEY') {
+      statusEl.innerHTML = '🔧 <strong>Setup needed:</strong> Open index.html and replace <code>firebaseConfig</code> with your Firebase project credentials.';
+    } else {
+      statusEl.innerHTML = '⚠️ Database error: ' + err.message + '<br><small>Check Firestore rules — allow public read/write for testing.</small>';
+    }
+  });
+</script>
+</body>
+</html>
